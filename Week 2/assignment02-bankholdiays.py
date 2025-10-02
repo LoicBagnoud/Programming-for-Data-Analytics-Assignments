@@ -28,9 +28,58 @@ print(f"These are the holidays and the dates for Northern Ireland\n")
 for holiday in data["northern-ireland"]["events"]:
     print(f"{holiday['date']} – {holiday['title']}")
 
+# This part was more complicated by ChatGPT game a good idea and I tried to follow it. 
+# I had a problem when I used dates for the last for loop because I had multiple holidays in different days and it looks confusing,
+# so I chose to sort it by title and used the break function to stop the loop
+
+print(f"These are the holidays and the dates that are UNIQUE to Northern Ireland\n")
+
+# This for loop basically goes through the data and assumes that each value in that dictionary is unique.
+# So we set that unique variable to TRUE.
+for holiday in data["northern-ireland"]["events"]:
+    unique = True  
+
+# Afterwards, we check England to see if there's duplicates. If so, unique becomes FALSE. 
+    for england_holiday in data["england-and-wales"]["events"]:
+        if holiday["title"] == england_holiday["title"]:
+            unique = False
+            break
+
+# We do the same for Scotland
+    for scotland_holiday in data["scotland"]["events"]:
+        if holiday["title"] == scotland_holiday["title"]:
+            unique = False
+            break
+
+# And finally, if unique is still TRUE, we print out the holiday from the dictionary. Because this rests inside the for loop, it will go through 
+# each holiday in the Northern Ireland section. 
+    if unique:
+        print(f"{holiday['title']}")
+
 
 # References:
 
 # https://www.gov.uk/bank-holidays.json - For the live data on the UK's public holidays
 # https://www.geeksforgeeks.org/python/json-dump-in-python/ - For getting the Json file in a readable format
 # https://www.w3schools.com/python/ref_requests_get.asp - For the request command that allows me to get data from URLs.
+# https://docs.python.org/3/library/stdtypes.html#truth-value-testing - For reminding myself of Boolean Value logic.
+# https://www.geeksforgeeks.org/python/python-break-statement/ - For the break statement.
+
+# ChatGPT - He gave the nifty idea about using TRUE and FALSE switches to check if an element is unique:
+''' 
+Instead of any(...) expressions, just use a plain loop and an if flag.
+
+for holiday in data["northern-ireland"]["events"]:
+    unique = True  # assume it's unique unless we find a match
+
+    # check England/Wales
+    for h in data["england-and-wales"]["events"]:
+        if holiday["date"] == h["date"]:
+            unique = False
+This version just:
+
+- Loops over NI holidays.
+- Starts with unique = True.
+- If the date shows up in the other regions, flip it to False.
+- Print only if it stayed True.
+'''
